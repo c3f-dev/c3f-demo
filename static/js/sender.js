@@ -1,5 +1,4 @@
 //http://127.0.0.1:5500/deploy/sender.html?id=LJH&browser=d6a5c9544eca9b5ce2266d1c34a93222
-//稳定版本 send和receive具有应答能力
 
 var offscreenCan;
 var gl;
@@ -91,7 +90,7 @@ function handleMessage(msg)
   }else(msg.data[0]=='bar process')
   {
     let progressBar=document.getElementById("progress");
-    progress += 20; // 假设每次增加 20%
+    progress += 20; 
     if(progress<100)
     {
       progressBar.style.width = `${progress}%`;
@@ -104,7 +103,7 @@ function handleMessage(msg)
             console.log('flag_Bar OK');
             progressBar.style.width = `${100}%`;
             progressBar.innerHTML=progressBar.style.width;
-            clearInterval(intervalId); // 停止检查
+            clearInterval(intervalId); 
         }
       }, 2000);
     
