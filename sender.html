@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" >
+
+<head>
+  <meta charset="UTF-8">
+  <title>WebGL Sensing Encoder</title>
+  <script src="static/js/consts.js"></script>
+  <script src="static/jquery.js"></script>
+  <link rel="stylesheet"  type="text/css" href="/styles.css">
+  <style>
+    pre {
+      font-size: 24px; /* 设置所需的字体大小 */
+    }
+  </style>
+  <style>
+    /* 初始样式 */
+    p {
+      font-size: 16px;
+    }
+    
+    .red-bold-text {
+      color: red;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+<h1 >B Page</h1>
+<br>
+<br>
+<div>
+<b id="prompt" style="font-size: 24px; color: blue;">The experiment is about to begin... </b><b id="prompt" style="font-size: 24px; color: blue;">(Waiting for system stability! 20s)</b><br><br>
+<b style="color: red; font-weight: bold; font-size: 24px;">Don't operate the computer</b> <b style="color: black; font-weight: bold; font-size: 20px;">or</b> <b style="color: red; font-weight: bold; font-size: 24px;">run any apps</b> <b style="color: green; font-weight: bold; font-size: 24px;">        until the progress bar is full.</b>
+
+<br>
+<div class="progress-container">
+  <div class="progress-bar" id="progress"></div>
+</div>
+<br>
+<pre id="results"></pre>
+<br>
+This test will last about 3~10 mins, usually not more than 10 minutes.（It depends on the computer performance.）<br>
+<br>
+<br>
+<b style="color: black; font-weight: bold; font-size: 20px;">How to retry the experiment</b><br>
+(1) Close the A and B pages. <br>
+(2) Follow the order of links on the Set Page , open them sequentially <b style="color: red; font-weight: bold; font-size: 18px;">(the A Page must be opened first)</b><br>
+<br>
+
+
+<div id="testCanvas"></div>
+<canvas id="Canvas" height="1" width="1"></canvas>
+<script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+<!--<script src="static/js/collector.js"></script>-->
+<script src="static/js/hamming.js"></script>
+<script src="static/jquery.js"></script>
+
+<script src="static/js/workers/senderWorker.js"></script>
+<script src="static/js/sender.js"></script>
+
+</body>
+</html>
+

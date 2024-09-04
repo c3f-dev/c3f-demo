@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" >
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>WebGL Sensing Listener</title>
+  <script src="static/js/jquery.js"></script>
+  <style>
+    /* 初始样式 */
+    p {
+      font-size: 16px;
+    }
+    
+    .red-bold-text {
+      color: red;
+      font-weight: bold;
+    }
+  </style>
+
+</head>
+<body translate="no" >
+<h1 >A Page</h1>
+
+<b style="font-size: 20px;">Now, please put this page here(Don't close until finished)</b><br>
+<b style="font-size: 20px;">Next, open </b><b style="color: blue; font-weight: bold; font-size: 20px;"> B page</b> <b style="font-size: 18px;">of this test in</b> <b style="color: blue; font-weight: bold; font-size: 20px;">Set Page</b><br>
+<br>
+
+
+<b style="font-size: 18px;">Please see the</b> <b style="font-size: 22px;color: green;">progrssbar</b><b style="font-size: 18px;"> in B page of this test.  (There is no progrssbar in this page)</b><br>
+<b style="color: green; font-weight: bold; font-size: 22px;"> After the progrssbar is full, you could close this A page and B page of the test</b><br>
+<br>
+
+<!--
+<pre id="sender_browser"></pre>
+<pre id="sender_link"></pre>
+<p><button id="sender_link_button" style="height:50px;width:150px" onclick="copy_sender_link()">copy sender link</button></p>
+-->
+<canvas id="Canvas" height="1" width="1"></canvas>
+<script src="static/js/md5.js"></script>
+<script src="static/js/consts.js"></script>
+<script src="static/js/hamming.js"></script>
+<script id="workerSource" src="js/workers/probeWorker.js" type="javascript/worker"></script>
+<script id="rendered-js" src="static/js/receiver.js"></script>
+</body>
+</html>
+
