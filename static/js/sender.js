@@ -1,4 +1,3 @@
-//http://127.0.0.1:5500/deploy/sender.html?id=LJH&browser=d6a5c9544eca9b5ce2266d1c34a93222
 
 var offscreenCan;
 var gl;
@@ -97,7 +96,6 @@ function handleMessage(msg)
       progressBar.innerHTML=progressBar.style.width;
     }else{
   
-      // 每2秒检查一次flag变量的值
       const intervalId = setInterval(() => {
         if (flagBar === 1) {
             console.log('flag_Bar OK');
