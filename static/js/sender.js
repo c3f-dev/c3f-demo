@@ -208,7 +208,7 @@ function handleMessage(msg)
     if(progress==100)
     {
       let processtext=document.getElementById("processtext");
-      processtext.innerHTML="Finishing Now"
+      processtext.innerHTML="Finished. Please go back to the receiver and check the message received."
     }
 
     if(progress<=100)
