@@ -62,8 +62,8 @@ function convertToFixedBitSequence() {
   const binaryString = Array.from(utf8Encoded).map(byte => byte.toString(2).padStart(8, '0')).join(''); 
 
   const n = binaryString.length;
-  if (n > 512) {
-      alert("Unicode beyond 512 bit！");
+  if (n > 503) {
+      alert("Too long! (Unicode beyond 512 bit)");
       return;
   }
 
@@ -71,7 +71,7 @@ function convertToFixedBitSequence() {
   const lengthInfo = n.toString(2).padStart(9, '0');
   
 
-  const paddingBits = '0'.repeat(Math.max(0, 512 - n - 9));
+  const paddingBits = '0'.repeat(512 - n - 9);
   
 
   fixedBitSequence = lengthInfo + binaryString + paddingBits;
