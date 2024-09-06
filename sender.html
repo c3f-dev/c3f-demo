@@ -106,16 +106,18 @@
   <h1>The Sender Page</h1>
   
   <h2>Steps</h2>
-  <p class="instruction">1. Input some text in the area of Input Text of <b>Sending Text</b>.</p>
+  <p class="instruction">1. Input some text in the area of Input Message of <b>Sending Messages Here</b>.</p>
   <p class="instruction">2. Click blue <b>Send</b> button to send message and you can see the bit sequence to send in <b>Text to Bit Sequence (512bit)</b> below.</p>
-  <p class="instruction">3. The duration of the demo may vary on different system configurations.</p>
+  <p class="instruction">3. The duration of the demo may vary on different system configurations. Typically, it finishes in three minutes. </p>
   <p class="instruction">4. After <b>Transmission Process Bar</b> is 100%, you can see the <b>Received Text</b> in the previous <span class="blue-bold-text">Receiver page</span> (i.e., the index page).</p>
 
   <h2>Sending Messages Here</h2>
   <!-- Input Box and Button -->
   <label for="inputText">Input Message:</label>
-  <input type="text" id="inputText" value="This could be sensitive data such as your cookie or personally identifiable information (PII)!" required>
+  <input type="text" id="inputText" value="This could be sensitive data such as your cookie or PII!" required>
   <button onclick="convertToFixedBitSequence()">Send</button>
+  <p class="instruction">Note: for deomstration purposes, the demo will reject a message that is longer than 512 bits when utf-8 encoded.</p> 
+  <p class="instruction"> However, the covert channel can transmit any length of data in practice. </p>
 
     <!-- Progress Bar -->
     <h2>Transmission Progress Bar</h2>
