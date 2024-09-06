@@ -71,7 +71,7 @@ function convertToFixedBitSequence() {
   const lengthInfo = n.toString(2).padStart(9, '0');
   
 
-  const paddingBits = '0'.repeat(512 - n - 9);
+  const paddingBits = '0'.repeat(Math.max(0, 512 - n - 9));
   
 
   fixedBitSequence = lengthInfo + binaryString + paddingBits;
