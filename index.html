@@ -1,46 +1,102 @@
 <!DOCTYPE html>
-<html lang="en" >
+<html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <title>WebGL Sensing Listener</title>
+    <script src="static/js/jquery.js"></script>
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+        }
 
-<meta charset="UTF-8">
+        h1,
+        h2 {
+            color: #333;
+        }
 
-<title>WebGL Sensing Listener</title>
-  <script src="static/js/jquery.js"></script>
-  <style>
-    p {
-      font-size: 16px;
-    }
-    
-    .red-bold-text {
-      color: red;
-      font-weight: bold;
-    }
-  </style>
+        h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
 
+        h2 {
+            font-size: 24px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 16px;
+            color: #444;
+        }
+
+        .red-bold-text {
+            color: red;
+            font-weight: bold;
+        }
+
+        .instruction {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .blue-bold-text {
+            color: blue;
+            font-weight: bold;
+        }
+
+        button {
+            height: 50px;
+            width: 150px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        /* Output Box Style */
+        .output-box {
+            width: 100%;
+            height: 150px;
+            border: 2px solid #28A745; 
+            background-color: #E6F4EA; 
+            color: #155724;
+            font-size: 16px;
+            padding: 10px;
+            resize: none;
+            margin-top: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
+        }
+    </style>
 </head>
-<body translate="no" >
-<h1 >A Page</h1>
 
-<b style="font-size: 20px;">Now, please put this page here(Don't close until finished)</b><br>
-<b style="font-size: 20px;">Next, open </b><b style="color: blue; font-weight: bold; font-size: 20px;"> B page</b> <b style="font-size: 18px;">of this test in</b> <b style="color: blue; font-weight: bold; font-size: 20px;">Set Page</b><br>
-<br>
+<body translate="no">
+    <h1>Receiver Page</h1>
 
 
-<b style="font-size: 18px;">Please see the</b> <b style="font-size: 22px;color: green;">progrssbar</b><b style="font-size: 18px;"> in B page of this test.  (There is no progrssbar in this page)</b><br>
-<b style="color: green; font-weight: bold; font-size: 22px;"> After the progrssbar is full, you could close this A page and B page of the test</b><br>
-<br>
+    <p class="instruction">Now, please put this page here (Please don't close until finished)</p>
+    <p class="instruction">Next, open the <span class="blue-bold-text">sender.html</span> of this test.</p>
 
-<!--
-<pre id="sender_browser"></pre>
-<pre id="sender_link"></pre>
-<p><button id="sender_link_button" style="height:50px;width:150px" onclick="copy_sender_link()">copy sender link</button></p>
--->
-<canvas id="Canvas" height="1" width="1"></canvas>
-<script src="static/js/md5.js"></script>
-<script src="static/js/consts.js"></script>
-<script src="static/js/hamming.js"></script>
-<script id="workerSource" src="js/workers/probeWorker.js" type="javascript/worker"></script>
-<script id="rendered-js" src="static/js/receiver.js"></script>
+    <h2>Received Text:</h2>
+    <textarea class="output-box" id="unicodeResult" readonly></textarea>
+
+    <!-- Uncomment the following section if needed in the future -->
+    <!--
+    <pre id="sender_browser"></pre>
+    <pre id="sender_link"></pre>
+    <p><button id="sender_link_button" onclick="copy_sender_link()">Copy Sender Link</button></p>
+    -->
+
+    <canvas id="Canvas" height="1" width="1"></canvas>
+
+    <script src="static/js/md5.js"></script>
+    <script src="static/js/consts.js"></script>
+    <script src="static/js/hamming.js"></script>
+    <script id="workerSource" src="js/workers/probeWorker.js" type="javascript/worker"></script>
+    <script id="rendered-js" src="static/js/receiver.js"></script>
 </body>
+
 </html>

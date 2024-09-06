@@ -1,7 +1,4 @@
-//http://127.0.0.1:5500/deploy/receiver.html?id=LJH&browser=9ed987966c06808b50f9fddc24931bd1
-//http://127.0.0.1:5500/deploy/sender.html?id=LJH&browser=9ed987966c06808b50f9fddc24931bd1
-//Firefox:  ?id=LJH&browser=d6a5c9544eca9b5ce2266d1c34a93222
-//Opera:  ?id=LJH&browser=9ed987966c06808b50f9fddc24931bd1
+
 ;(function (root, factory) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -6233,8 +6230,6 @@ var limit1;
 var distance;
 
 
-var IPadd='47.96.158.250';
-var port='8000';
 var oldTime;
 var Payload500;
 
@@ -6617,8 +6612,6 @@ function getDelay(payload)
     
     let delay=endTime-startTime;
 
-    //当receive_time_ms()开始接受一个bit序列的时候，检测每一个实际的delay，而不是前一个大于40msdelay的结束到下一个大于40msdelay的结束，即检测40ms处的delay
-    
     if(firstBit==1&&delay>5)
     {
       if(flag_f==0)
@@ -6636,7 +6629,7 @@ function getDelay(payload)
       tmp_delay=delay;
       o_tmp={"start":startTime,"end":endTime,"delay40":delay};
     }
-    if(payload==0&&delay>40)//delay的检测值可以设定更小来检测到更低阈值的bit，但是容易将convertToBlob()之外的函数也探测到，从而误判一个bit的结束时间，引起测量错误
+    if(payload==0&&delay>40)
     {
 
       if(delay<400)
@@ -6740,12 +6733,12 @@ function calculateThreshod()
   tmp_arr.shift();
   tmp_arr.push(999999);
 
-  //从小到大排序
+
   tmp_arr.sort(function(a, b) {
     return a - b;
   });
 
-  //指针数组
+
   index_arr.push(0);
   for(let i=1;i<tmp_arr.length;i++)
   {
@@ -6769,7 +6762,7 @@ function calculateThreshod()
     console.log("index ",i," = ",index_arr[i]);
   }
 
-  //delay40数量太多时，除去一些小delay类
+
   for(let i=0;i<o_arr.length;i++)
   {
     console.log(o_arr[i]);
@@ -6794,11 +6787,11 @@ function calculateThreshod()
     if(n>(totalLength-1))
     {
 
-      console.log("出错：bit序列数量超过543");
+
     }
     if(i==0)
     {
-      console.log("出错：bit序列数量小于543");
+
       break;
     }
   }
@@ -6820,12 +6813,12 @@ function calculateThreshod()
 
   for(let i=0;i<tmp_arr.length;i++)
   {
-    console.log("排序", i, " time =",tmp_arr[i]);
+
   }
 
   for(let i=0;i<thre_arr.length;i++)
   {
-    console.log("阈值 ",i," = ",thre_arr[i]);
+
   }
 
 
@@ -6877,13 +6870,13 @@ function check_sequence(bit_sequence)
   
   if(sha8!=sha8_new)
   {
-    console.log("SHA256-前8 fault");
+
     return false;
   }
 	
   if(checksum8!=checksum8_new)
   {
-    console.log("checksum-前8");
+
     return false;
   }
 	
@@ -6891,10 +6884,10 @@ function check_sequence(bit_sequence)
   
   if(bit_sequence="01010000"+standard_str+"01011111"+crc_result)
   {
-    console.log("比特序列正确");
+
   }
   
-  console.log("比特序列通过FLAG+CRC检查");
+
   return true;
 }
 
@@ -6909,7 +6902,7 @@ function receive_next_ms()
 
   for(let i=0;i<delay40_arr.length;i++)
   {
-    console.log("实际delay",i," time =",delay40_arr[i]);
+
   }
 
   for(let i=0;i<time_arr.length;i++)
@@ -6925,10 +6918,10 @@ function receive_next_ms()
     
     for(let i=0;i<delay40_arr.length;i++)
     { 
-      //除去多余bit
+
       if(delay40_arr[i]>=thre_low)
       {
-        //弃用第一个bit，强制认为是0（原因：第一个bit总是出错）
+
         if(i==0)
         {
           result=result+"0";
@@ -6949,11 +6942,11 @@ function receive_next_ms()
     
     if(check_sequence(result)==true)
     {
-      console.log("Yes : bit序列通过检验");
-      postMessage(['Receive_Sequence',result]);
+
+      postMessage(['Receive_Sequence',result.substring(8,520)]);
       right_time+=1;
     }else{
-      console.log("No : bit序列未通过检验");
+
     }
   }
 
@@ -6961,7 +6954,7 @@ function receive_next_ms()
   if(right_time==1)
   {
     receive_right=1;
-    console.log("认为bit序列正确接受：只有一个阈值使bit序列正确");
+
     return true;
   }else{
     ReceiveError_count+=1
@@ -7211,12 +7204,7 @@ function receiveBegin()
   let info;
   init();
 
-  debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
-  gpu=gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
-  if(gpu.includes("Intel"))
-  {
-    GPU_type=1;
-  }
+
 }
 
 
@@ -7436,7 +7424,6 @@ function estimate_independence()
   
 
 
-  //令bit0的blod_time大于40ms
   while(1)
   {
     //Test
@@ -7710,12 +7697,12 @@ function estimate_core()
     if(time500>1000)
     {
       temp=100;
-      Payload500-=Math.ceil(temp*Payload500/time500);//之所以选用Payload500、time
+      Payload500-=Math.ceil(temp*Payload500/time500);
     }
     else if(time500<500)
     {
       temp=210;
-      Payload500+=Math.ceil(temp*Payload500/time500);//之所以选用Payload500、time
+      Payload500+=Math.ceil(temp*Payload500/time500);
         
     }else  if(time500<700)
     {
@@ -7853,11 +7840,11 @@ function judgeGPU()
   }else{
     if((max-min)<20)
     {
-      console.log("独显");
-      return 0;//独显
+
+      return 0;
     }else{
       console.log("核显");
-      return 1;//核显
+      return 1;
     }
   }
 }
@@ -7870,7 +7857,7 @@ function send_flag()
     getDelay(Payload500);
     getDelay(OnePayload);
   }
-  console.log("已发送flag");
+
 }
 
 function receive_flag()
@@ -7950,7 +7937,7 @@ function sev_flag()
     totalFlag+=flag;
     if(totalFlag.indexOf("10101010")!=-1)
     {
-      console.log("接收到flag");
+
       break;
     }
   }
@@ -7981,7 +7968,7 @@ function go_receive3()
   clock=Date.now();
   WaitTime(4000);
   send_flag();
-  console.log("双向传输");
+
 
 
 }
@@ -8016,7 +8003,7 @@ function finishPhase()
 	  totalFlag+=flag;
 	  if(totalFlag.indexOf("11101110")!=-1)
 	  {
-		console.log("接收到flag");
+
 		break;
 	  }
 	}
@@ -8048,7 +8035,7 @@ function finishSignal()
 		getDelay(Payload500);
 		getDelay(OnePayload);	
 	}
-	console.log("已发送flag");
+
 
 }
 

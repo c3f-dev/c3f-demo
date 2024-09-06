@@ -1,4 +1,5 @@
 
+
 var offscreenCan;
 var gl;
 var Canvas;
@@ -9,6 +10,31 @@ var progress = 0;
 var abc={};
 var serverWorker;
 var flagBar=0;
+var fixedBitSequence;
+function convertToFixedBitSequence() {
+  const inputText = document.getElementById('inputText').value;
+  const utf8Encoded = new TextEncoder().encode(inputText); 
+  const binaryString = Array.from(utf8Encoded).map(byte => byte.toString(2).padStart(8, '0')).join(''); 
+
+  const n = binaryString.length;
+  if (n > 512) {
+      alert("Unicode beyond 512 bit！");
+      return;
+  }
+
+
+  const lengthInfo = n.toString(2).padStart(9, '0');
+  
+
+  const paddingBits = '0'.repeat(512 - n - 9);
+  
+
+  fixedBitSequence = lengthInfo + binaryString + paddingBits;
+
+
+  document.getElementById('result').textContent = fixedBitSequence;
+  sendInit();
+}
 
 
 window.onload = mainWithThreads;
@@ -75,7 +101,7 @@ function mainWithThreads()
 {
   
 
-  sendInit();
+  
 
 }
 
@@ -83,10 +109,13 @@ function mainWithThreads()
 
 function handleMessage(msg)
 {
-  if(msg.data[0]=='timeOK')
+  if(msg.data[0]=='WebglOK')
+  {
+    myWorker.postMessage(["512bit",fixedBitSequence]);
+  }else if(msg.data[0]=='timeOK')
   {
     flagBar=1;
-  }else(msg.data[0]=='bar process')
+  }else if(msg.data[0]=='bar process')
   {
     let progressBar=document.getElementById("progress");
     progress += 20; 
@@ -96,6 +125,7 @@ function handleMessage(msg)
       progressBar.innerHTML=progressBar.style.width;
     }else{
   
+
       const intervalId = setInterval(() => {
         if (flagBar === 1) {
             console.log('flag_Bar OK');

@@ -1,4 +1,4 @@
-//http://127.0.0.1:5500/deploy/sender.html?id=LJH&browser=d6a5c9544eca9b5ce2266d1c34a93222
+
 ;(function (root, factory) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -6224,8 +6224,7 @@ var standard_str="00000000111111111010101000000000111111111010101000000000111111
 var canvas;
 
 
-var IPadd='47.96.158.250'
-var port='8000'
+
 
 var oldTime;
 
@@ -6407,7 +6406,7 @@ void main(void) {
 
 
 
-// 生成一个包含10位的随机二进制字符串
+
 function randomBitSequence(length) {
   let binaryString = '';
 
@@ -6556,8 +6555,7 @@ function getDelay(payload)
     
     let delay=endTime-startTime;
 
-    //当receive_time_ms()开始接受一个bit序列的时候，检测每一个实际的delay，而不是前一个大于40msdelay的结束到下一个大于40msdelay的结束，即检测40ms处的delay
-    
+
     if(firstBit==1&&delay>5)
     {
       if(flag_f==0)
@@ -6575,7 +6573,7 @@ function getDelay(payload)
       tmp_delay=delay;
       o_tmp={"start":startTime,"end":endTime,"delay40":delay};
     }
-    if(payload==0&&delay>40)//delay的检测值可以设定更小来检测到更低阈值的bit，但是容易将convertToBlob()之外的函数也探测到，从而误判一个bit的结束时间，引起测量错误
+    if(payload==0&&delay>40)
     {
 
       if(delay<400)
@@ -6693,7 +6691,7 @@ function send_next()
   console.log("checksum8 =",checksum8);
   bit_sequence=bit_sequence+crc_checksum+sha8+checksum8;
 
-  console.log("bit序列：",bit_sequence);
+  console.log("bit sequence：",bit_sequence);
   sendSequence(bit_sequence);
   //sendSequence(bit_sequence);
   
@@ -6800,7 +6798,7 @@ function receive_time_ms()
       {
         time_out_flag=1;
 
-        console.log("响应码重传时钟超时，前一bit序列被正确接受");
+        console.log("Timeout success");
         transmit_end=Date.now();
         transmit_time=transmit_end-setup_end;
 		console.log("Transmit_Time=",transmit_time);
@@ -6868,12 +6866,12 @@ function calculateThreshod()
   tmp_arr.shift();
   tmp_arr.push(999999);
 
-  //从小到大排序
+
   tmp_arr.sort(function(a, b) {
     return a - b;
   });
 
-  //指针数组
+
   index_arr.push(0);
   for(let i=1;i<tmp_arr.length;i++)
   {
@@ -6897,7 +6895,7 @@ function calculateThreshod()
     console.log("index ",i," = ",index_arr[i]);
   }
 
-  //delay40数量太多时，除去一些小delay类
+
   for(let i=0;i<o_arr.length;i++)
   {
     console.log(o_arr[i]);
@@ -6922,11 +6920,11 @@ function calculateThreshod()
     if(n>7)
     {
 
-      console.log("出错：bit序列数量超过8");
+      console.log("Error：bit over 8 bits");
     }
     if(i==0)
     {
-      console.log("出错：bit序列数量小于8");
+		console.log("Error：bit less 8 bits");
       break;
     }
   }
@@ -6948,12 +6946,12 @@ function calculateThreshod()
 
   for(let i=0;i<tmp_arr.length;i++)
   {
-    console.log("排序", i, " time =",tmp_arr[i]);
+    console.log("Sort", i, " time =",tmp_arr[i]);
   }
 
   for(let i=0;i<thre_arr.length;i++)
   {
-    console.log("阈值 ",i," = ",thre_arr[i]);
+    console.log("Threshold ",i," = ",thre_arr[i]);
   }
 
 
@@ -6984,10 +6982,7 @@ function Waiting()
     response_result=1;
     return;
   }
-  for(let i=0;i<delay40_arr.length;i++)
-  {
-    console.log("实际delay",i," time =",delay40_arr[i]);
-  }
+
 
   for(let i=0;i<time_arr.length;i++)
   {
@@ -7002,10 +6997,10 @@ function Waiting()
     
     for(let i=0;i<delay40_arr.length;i++)
     { 
-      //除去多余bit
+
       if(delay40_arr[i]>=thre_low)
       {
-        //弃用第一个bit，强制认为是0（原因：第一个bit总是出错）
+
         if(i==0)
         {
           result=result+"0";
@@ -7029,22 +7024,20 @@ function Waiting()
       console.log("Yes : test response==01010101");
       right_time+=1;
     }else{
-      console.log("No : test response!=成功响应码");
+      console.log("No : test response is OK ACK");
     }
   }
 
   console.log("right_time = ",right_time);
   if(right_time==1)
   {
-    console.log("成功响应码只有一个阈值对应01010101");
-    console.log("接收成功");
+
     response_result=1;
     transmit_end=Date.now();
     transmit_time=transmit_end-setup_end;
     console.log("transmit_time=",transmit_time);
   }else{
-    console.log("成功响应码误码或有多个阈值对应01010101");
-    console.log("接收失败");
+
     retransmit_count+=1;
     response_result=0;
   }
@@ -7102,16 +7095,6 @@ function sendBegin()
   let info;
   init();
   
-  debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
-  gpu=gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
-  if(gpu.includes("Intel"))
-  {
-    GPU_type=1;
-  }
-  console.log(gpu);
-  
-  
-  console.log(sessionID);
   /*
   info=generatingInfo_Normal(sessionID,"gpu_sender",gpu);
   send_Info_Normal(info);
@@ -7300,7 +7283,6 @@ function estimate_independence()
   
 
 
-  //令bit0的blod_time大于40ms
   while(1)
   {
     //Test
@@ -7562,12 +7544,12 @@ function estimate_core()
     if(time500>1000)
     {
       temp=100;
-      Payload500-=Math.ceil(temp*Payload500/time500);//之所以选用Payload500、time
+      Payload500-=Math.ceil(temp*Payload500/time500);
     }
     else if(time500<500)
     {
       temp=210;
-      Payload500+=Math.ceil(temp*Payload500/time500);//之所以选用Payload500、time
+      Payload500+=Math.ceil(temp*Payload500/time500);
         
     }else  if(time500<700)
     {
@@ -7706,11 +7688,11 @@ function judgeGPU()
   }else{
     if((max-min)<20)
     {
-      console.log("独显");
-      return 0;//独显
+
+      return 0;
     }else{
-      console.log("核显");
-      return 1;//核显
+
+      return 1;
     }
   }
 }
@@ -7798,7 +7780,6 @@ function sev_flag()
     totalFlag+=flag;
     if(totalFlag.indexOf("10101010")!=-1)
     {
-      console.log("接收到flag");
       break;
     }
   }
@@ -7832,6 +7813,7 @@ var transmit_end;
 
 var setup_time;
 var transmit_time;
+var UnicodeSequence;
 function go_send4()
 {
   
@@ -7839,7 +7821,7 @@ function go_send4()
   WaitTime(20000);
   clock=Date.now();
 
-  bit_512=randomBitSequence(512);
+  bit_512=UnicodeSequence;
   clock=Date.now();
 
   standard_str=randomBitSequence(512);
@@ -7874,7 +7856,7 @@ function go_send4()
   setup_time=setup_end-setup_start;
 
   postMessage(['bar process']);
-  console.log("双向传输");
+
  
   while(response_result==0)
   {
@@ -7910,7 +7892,6 @@ function finishSignal()
 		getDelay(Payload500);
 		getDelay(OnePayload);	
 	}
-	console.log("已发送flag");
 
 }
 
@@ -7923,7 +7904,7 @@ function finishPhase()
 	  totalFlag+=flag;
 	  if(totalFlag.indexOf("11101110")!=-1)
 	  {
-		console.log("接收到flag");
+
 		break;
 	  }
 	}
@@ -7931,10 +7912,17 @@ function finishPhase()
 
 }
 onmessage=(e)=>{
-    offscreenCan=e.data.canvas;
-    gl=offscreenCan.getContext("webgl");
-    sendBegin();
-    go_send4();
+	if(typeof(e.data[0])=='string'&& e.data[0]=='512bit')
+	{
+		UnicodeSequence=e.data[1];
+		console.log("UnicodeSequence=",UnicodeSequence);
+		sendBegin();
+		go_send4();
+	}else{
+		offscreenCan=e.data.canvas;
+		gl=offscreenCan.getContext("webgl");
+		postMessage(["WebglOK"]);
+	}
 }
 
 
