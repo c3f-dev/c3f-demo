@@ -116,8 +116,7 @@
   <label for="inputText">Input Message:</label>
   <input type="text" id="inputText" value="This could be sensitive data such as your cookie or PII!" required>
   <button onclick="convertToFixedBitSequence()">Send</button>
-  <p class="instruction">Note: for deomstration purposes, the demo will reject a message that is longer than 512 bits when utf-8 encoded.</p> 
-  <p class="instruction"> However, the covert channel can transmit any length of data in practice. </p>
+  <p class="instruction">Note: for demonstration purposes, this demo does not allow a very long message. We pops up an alert when the message is too long. </p>
 
     <!-- Progress Bar -->
     <h2>Transmission Progress Bar</h2>
