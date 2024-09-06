@@ -11,6 +11,51 @@ var abc={};
 var serverWorker;
 var flagBar=0;
 var fixedBitSequence;
+
+
+
+function fnBrowserDetect() {
+  let userAgent = navigator.userAgent;
+  let browserName;
+
+  if(userAgent.match(/edg/i)){
+    browserName = "edge";
+  }else if(userAgent.match(/opr/i)){
+    browserName = "opera";
+  }else if(userAgent.match(/chrome|chromium|crios/i)){
+    browserName = "chrome";
+  }else if(userAgent.match(/firefox|fxios/i)){
+    browserName = "firefox";
+  }else if(userAgent.match(/safari/i)){
+    browserName = "safari";
+  }else{
+    browserName="No browser detection";
+  }
+  if (navigator.brave) browserName = "brave";
+  return browserName;
+}
+
+function isWebRTCSupported() {
+	return !!(window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection);
+  }
+  
+function isTorBrowser() {
+	let userAgent = navigator.userAgent;
+
+	// 检查 userAgent 是否包含 "TorBrowser"
+	if (userAgent.includes("TorBrowser")) {
+		return true;
+	}
+
+	// 如果 userAgent 中未包含 "TorBrowser"，检查 WebRTC 是否被禁用
+	if (!isWebRTCSupported()) {
+		return true;
+	}
+
+	return false;
+}
+  
+  
 function convertToFixedBitSequence() {
   const inputText = document.getElementById('inputText').value;
   const utf8Encoded = new TextEncoder().encode(inputText); 
@@ -33,6 +78,10 @@ function convertToFixedBitSequence() {
 
 
   document.getElementById('result').textContent = fixedBitSequence;
+
+
+  let processtext=document.getElementById("processtext");
+  processtext.innerHTML="Setup Now"
   sendInit();
 }
 
@@ -67,10 +116,21 @@ function changeBar()
 
 
 
-
+var browserHere;
 
 function sendInit()
 {
+
+  browserHere=fnBrowserDetect();
+  if(browserHere=="firefox"){
+	if(isTorBrowser())
+	{
+		browserHere="tor";
+	}
+  }
+  console.log("browserHere=",browserHere);
+
+
 
   myWorker=new Worker("static/js/workers/senderWorker.js");
   myWorker.addEventListener('message',handleMessage);
@@ -106,36 +166,56 @@ function mainWithThreads()
 }
 
 
-
+var numre=0;
 function handleMessage(msg)
 {
   if(msg.data[0]=='WebglOK')
   {
-    myWorker.postMessage(["512bit",fixedBitSequence]);
+    myWorker.postMessage(["512bit",fixedBitSequence,browserHere]);
   }else if(msg.data[0]=='timeOK')
   {
     flagBar=1;
+  }else if(msg.data[0]=="Retransmit")
+  {
+     numre+=1;
+    let progressBar=document.getElementById("progress");
+    progress=20;
+    if(progress==20)
+    {
+      let processtext=document.getElementById("processtext");
+      processtext.innerHTML="Retransmitting Now (Retransmitting Times="+numre+")";
+    }
+    progressBar.style.width = `${progress}%`;
+    progressBar.innerHTML=progressBar.style.width;
+
+
   }else if(msg.data[0]=='bar process')
   {
     let progressBar=document.getElementById("progress");
-    progress += 20; 
-    if(progress<100)
+    progress += 10; 
+    if(progress==20)
+    {
+      let processtext=document.getElementById("processtext");
+      processtext.innerHTML="Transmitting Now"
+    }
+
+    if(progress==90)
+    {
+      let processtext=document.getElementById("processtext");
+      processtext.innerHTML="Receiver Checking Now"
+    }
+
+    if(progress==100)
+    {
+      let processtext=document.getElementById("processtext");
+      processtext.innerHTML="Finishing Now"
+    }
+
+    if(progress<=100)
     {
       progressBar.style.width = `${progress}%`;
       progressBar.innerHTML=progressBar.style.width;
-    }else{
-  
-
-      const intervalId = setInterval(() => {
-        if (flagBar === 1) {
-            console.log('flag_Bar OK');
-            progressBar.style.width = `${100}%`;
-            progressBar.innerHTML=progressBar.style.width;
-            clearInterval(intervalId); 
-        }
-      }, 2000);
-    
     }
-
+  
   }
 }

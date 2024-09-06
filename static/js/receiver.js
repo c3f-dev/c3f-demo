@@ -9,10 +9,58 @@ var serverWorker;
 var fixedBitSequence;
 window.onload = mainWithThreads;
 
+function fnBrowserDetect() {
+  let userAgent = navigator.userAgent;
+  let browserName;
 
+  if(userAgent.match(/edg/i)){
+    browserName = "edge";
+  }else if(userAgent.match(/opr/i)){
+    browserName = "opera";
+  }else if(userAgent.match(/chrome|chromium|crios/i)){
+    browserName = "chrome";
+  }else if(userAgent.match(/firefox|fxios/i)){
+    browserName = "firefox";
+  }else if(userAgent.match(/safari/i)){
+    browserName = "safari";
+  }else{
+    browserName="No browser detection";
+  }
+  if (navigator.brave) browserName = "brave";
+  return browserName;
+}
+
+function isWebRTCSupported() {
+	return !!(window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection);
+  }
+  
+function isTorBrowser() {
+	let userAgent = navigator.userAgent;
+
+	// 检查 userAgent 是否包含 "TorBrowser"
+	if (userAgent.includes("TorBrowser")) {
+		return true;
+	}
+
+	// 如果 userAgent 中未包含 "TorBrowser"，检查 WebRTC 是否被禁用
+	if (!isWebRTCSupported()) {
+		return true;
+	}
+
+	return false;
+}
+  
 
 function receiveInit()
 {
+  browserHere=fnBrowserDetect();
+  if(browserHere=="firefox"){
+	if(isTorBrowser())
+	{
+		browserHere="tor";
+	}
+  }
+  console.log("browserHere=",browserHere);
   myWorker=new Worker("static/js/workers/probeWorker.js"); 
   myWorker.addEventListener('message',handleMessage);
   Canvas=document.getElementById("Canvas");
@@ -47,6 +95,9 @@ function handleMessage(msg)
   {
     fixedBitSequence=msg.data[1];
     convertBackToUnicode();
+  }else if(msg.data[0]=='WebglOK')
+  {
+    myWorker.postMessage(["browser",browserHere]);
   }
     
  

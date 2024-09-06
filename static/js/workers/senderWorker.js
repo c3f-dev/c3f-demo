@@ -6242,6 +6242,7 @@ var aveStallTime;
 var aveProbeTime;
 var interval;
 var GPU_type=0;
+var browser_receiver;
 
 var time_clock_arr=[];
 
@@ -6680,7 +6681,7 @@ var bit_sequence_valid;
 
 function send_next()
 {
-  WaitTime(2000);
+  WaitTime(1000);
   bit_sequence_valid=bit_512;
   bit_sequence="01010000"+bit_sequence_valid+"01011111";
   let crc_checksum=crc16(bit_sequence_valid);
@@ -7024,7 +7025,8 @@ function Waiting()
       console.log("Yes : test response==01010101");
       right_time+=1;
     }else{
-      console.log("No : test response is OK ACK");
+		console.log("No : test response is Not-OK ACK");
+	
     }
   }
 
@@ -7037,7 +7039,7 @@ function Waiting()
     transmit_time=transmit_end-setup_end;
     console.log("transmit_time=",transmit_time);
   }else{
-
+	postMessage(["Retransmit"])
     retransmit_count+=1;
     response_result=0;
   }
@@ -7087,6 +7089,8 @@ function fnBrowserDetect() {
 }
 
 
+  
+ 
 
 
 
@@ -7100,8 +7104,6 @@ function sendBegin()
   send_Info_Normal(info);
   */
 
-  browser_sender=fnBrowserDetect();
-  console.log(browser_sender);
 
 
   
@@ -7140,6 +7142,19 @@ function sendSequence(str)
     {
       sendOneBit(OnePayload);
     }
+	if(i==70||i==140)
+	{	
+		postMessage(['bar process']);
+	}else if(i==210||i==280)
+	{
+		postMessage(['bar process']);
+	}else if(i==350||i==420)
+	{
+		postMessage(['bar process']);
+	}else if(i==490)
+	{
+		postMessage(['bar process']);
+	}
   }
 }
 
@@ -7699,11 +7714,22 @@ function judgeGPU()
 
 function send_flag()
 {
-  for(let i=0;i<10;i++)
-  {
-    getDelay(Payload500);
-    getDelay(OnePayload);
-  }
+	if(browser_sender!="tor")
+	{
+		for(let i=0;i<10;i++)
+		{
+			getDelay(Payload500);
+			getDelay(OnePayload);
+		}
+	}else
+	{
+		for(let i=0;i<7;i++)
+		{
+			getDelay(Payload500);
+			getDelay(OnePayload);
+			getDelay(OnePayload);
+		}
+	}
   console.log("已发送flag");
 }
 
@@ -7780,6 +7806,13 @@ function sev_flag()
     totalFlag+=flag;
     if(totalFlag.indexOf("10101010")!=-1)
     {
+		browser_receiver="nonTor";
+      break;
+    }
+
+	if(totalFlag.indexOf("100100100100")!=-1)
+    {
+		browser_receiver="tor";
       break;
     }
   }
@@ -7818,16 +7851,15 @@ function go_send4()
 {
   
   setup_start=Date.now();
-  WaitTime(20000);
-  clock=Date.now();
+
 
   bit_512=UnicodeSequence;
-  clock=Date.now();
+
 
   standard_str=randomBitSequence(512);
   //standard_str=bit_512;
   postMessage(['bar process']);
-  clock=Date.now();
+
 
   if(GPU_type==0)
   {
@@ -7835,40 +7867,44 @@ function go_send4()
   }else{
     estimate_core();
   }
-  clock=Date.now();
 
-  postMessage(['bar process']);
 
-  WaitTime(4000);
 
-  clock=Date.now();
+
+  WaitTime(1000);
+
 
   send_flag();
-  clock=Date.now();
 
-  postMessage(['bar process']);
-  clock=Date.now();
+
+
 
   sev_flag();
-  clock=Date.now();
+
 
   setup_end=Date.now();
   setup_time=setup_end-setup_start;
 
   postMessage(['bar process']);
 
- 
+  
+
   while(response_result==0)
   {
-    clock=Date.now();
 
-    send_next();
-    clock=Date.now();
+	if(browser_receiver=="tor")
+	{
+		send_next_tor();
+	}else{
+    	send_next();
+	}
 
-    clock=Date.now();
-
-    Waiting();
-    clock=Date.now();
+	if(browser_sender=="tor")
+	{
+		Waiting_tor();
+	}else{
+    	Waiting();
+	}
 
     env_reset();
     if(response_result==1)
@@ -7877,8 +7913,6 @@ function go_send4()
     }
     
   }
-  finishSignal();
-  finishPhase();
   postMessage(['timeOK']);
 }
 
@@ -7916,6 +7950,8 @@ onmessage=(e)=>{
 	{
 		UnicodeSequence=e.data[1];
 		console.log("UnicodeSequence=",UnicodeSequence);
+		browser_sender=e.data[2];
+		console.log("browser_sender=",browser_sender);
 		sendBegin();
 		go_send4();
 	}else{
@@ -7939,3 +7975,190 @@ function WaitTime(time)
   }
 }
 
+var bit0payload;
+var bit1payload;
+function send_next_tor()
+{
+	WaitTime(1000);
+	bit0payload=ZeroPayload*2;
+	bit1payload=OnePayload*4;
+  bit_sequence_valid=bit_512;
+  bit_sequence="01010000"+bit_sequence_valid+"01011111";
+  let crc_checksum=crc16(bit_sequence_valid);
+  console.log("crc16 =",crc_checksum);
+  let sha8=SHA8(bit_sequence_valid);
+  console.log("sha8 =",sha8);
+  let checksum8=Checksum8(bit_sequence_valid);
+  console.log("checksum8 =",checksum8);
+  bit_sequence=bit_sequence+crc_checksum+sha8+checksum8;
+
+  console.log("bit sequence：",bit_sequence);
+  let delay;
+  for(let i=0;i<bit_sequence.length;i++)
+  {
+    if(bit_sequence[i]=='0')
+    {
+      delay=getDelay(bit0payload);
+    }else{
+      delay=getDelay(bit1payload);
+    }
+    console.log("delay=",delay);
+	if(i==70||i==140)
+	{	
+		postMessage(['bar process']);
+	}else if(i==210||i==280)
+	{
+		postMessage(['bar process']);
+	}else if(i==350||i==420)
+	{
+		postMessage(['bar process']);
+	}else if(i==490)
+	{
+		postMessage(['bar process']);
+	}
+  }
+
+
+  let start=Date.now();
+  while(1)
+  {
+    let end=Date.now();
+    if((end-start)>1000)
+    {
+      break;
+    }
+  }
+}
+
+
+
+
+
+
+
+
+var limitTor;
+
+function receive_time_ms_tor()
+{
+
+  time_out_flag=0;
+  let result='';
+
+  let BeginTimer=Date.now();
+  let time_out_start=Date.now();
+  firstBit=0;
+  while(1)
+  {
+
+    let EndTimer=Date.now();
+    if(firstBit==0)
+    {
+      let time_out=EndTimer-time_out_start;
+      if(time_out>20000)
+      {
+        time_out_flag=1;
+
+        console.log("Timeout success");
+        transmit_end=Date.now();
+        transmit_time=transmit_end-setup_end;
+		console.log("Transmit_Time=",transmit_time);
+        break;
+      }
+    }
+    if(firstBit!==0)
+    {
+      if((EndTimer-BeginTimer)>1000)
+      {
+        firstBit=0;
+        flag_f=0;
+        break;
+      }
+    }
+    let delay=getDelay(0);
+    let judgeflag=0
+
+    if(delay<80)//It's a probe
+    {
+     
+      judgeflag=-1;
+    }else
+    {
+      judgeflag=delay;
+    }
+
+    let bit=judgeflag;
+
+    if(bit!==-1)
+    {
+		if(firstBit==0)
+		{
+			result+='0';
+		}else{
+			if(delay<limitTor)
+			{
+			  result+='0';
+			}else{
+			  result+='1';
+			}
+		   
+		}
+
+      firstBit=1;
+      BeginTimer=Date.now();
+      lastbit_end=Date.now();
+    
+      
+
+    }else{
+
+    }
+
+
+
+  }
+
+  return result;
+}
+
+
+function Waiting_tor()
+{
+	limitTor=ZeroTime+100;
+  response_result=0;
+  let result=receive_time_ms_tor();
+  console.log("Response=",result);
+  if(time_out_flag==1)
+  {
+    response_result=1;
+    return;
+  }
+
+
+  let right_time=0;
+	if(check_response(result)==true)
+	{
+		console.log("Yes : test response==01010101");
+		right_time+=1;
+	}else{
+		console.log("No : test response is Not-OK ACK");
+
+	}
+  
+
+  console.log("right_time = ",right_time);
+  if(right_time==1)
+  {
+
+    response_result=1;
+    transmit_end=Date.now();
+    transmit_time=transmit_end-setup_end;
+    console.log("transmit_time=",transmit_time);
+  }else{
+	postMessage(["Retransmit"])
+    retransmit_count+=1;
+    response_result=0;
+  }
+
+
+}

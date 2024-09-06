@@ -6895,6 +6895,7 @@ function check_sequence(bit_sequence)
 
 var receive_write=0;
 var ReceiveError_count=0;
+var finialresult;
 function receive_next_ms()
 {
   WaitTime(1000);
@@ -6943,7 +6944,7 @@ function receive_next_ms()
     if(check_sequence(result)==true)
     {
 
-      postMessage(['Receive_Sequence',result.substring(8,520)]);
+		finialresult=result;
       right_time+=1;
     }else{
 
@@ -6954,7 +6955,7 @@ function receive_next_ms()
   if(right_time==1)
   {
     receive_right=1;
-
+	postMessage(['Receive_Sequence',finialresult.substring(8,520)]);
     return true;
   }else{
     ReceiveError_count+=1
@@ -7852,13 +7853,25 @@ function judgeGPU()
 
 function send_flag()
 {
-  for(let i=0;i<10;i++)
-  {
-    getDelay(Payload500);
-    getDelay(OnePayload);
-  }
-
+	if(browser_receiver!="tor")
+	{
+		for(let i=0;i<10;i++)
+		{
+			getDelay(Payload500);
+			getDelay(OnePayload);
+		}
+	}else
+	{
+		for(let i=0;i<7;i++)
+		{
+			getDelay(Payload500);
+			getDelay(OnePayload);
+			getDelay(OnePayload);
+		}
+	}
+  console.log("已发送flag");
 }
+
 
 function receive_flag()
 {
@@ -7929,6 +7942,7 @@ function receive_flag()
 
 var totalFlag="";
 
+
 function sev_flag()
 {
   while(1)
@@ -7937,13 +7951,17 @@ function sev_flag()
     totalFlag+=flag;
     if(totalFlag.indexOf("10101010")!=-1)
     {
+		browser_sender="nonTor";
+      break;
+    }
 
+	if(totalFlag.indexOf("100100100100")!=-1)
+    {
+		browser_sender="tor";
       break;
     }
   }
 }
-
-
 
 var handnum=0;
 var sev_flag_num1=0;
@@ -7966,7 +7984,7 @@ function go_receive3()
     estimate_core();
   }
   clock=Date.now();
-  WaitTime(4000);
+  WaitTime(1000);
   send_flag();
 
 
@@ -7987,9 +8005,19 @@ function receive_cycle()
 {
   while(receive_right==0)
   {
-    receive_next_ms();
+	if(browser_receiver=="tor")
+	{
+    	receive_next_ms_tor();
+	}else{
+		receive_next_ms();
+	}
     env_reset();
-    response_ms();
+	if(browser_sender=="tor")
+	{
+    	Response_tor();
+	}else{
+		response_ms();
+	}
   }
 
 }
@@ -8021,8 +8049,6 @@ function go_receive4()
   WaitTime(300);
   go_receive3();
   receive_cycle();
-  finishPhase();
-  finishSignal();
 
 }
 
@@ -8036,20 +8062,23 @@ function finishSignal()
 		getDelay(OnePayload);	
 	}
 
-
 }
 
 
-
+var browser_receiver;
 onmessage=(e)=>{
 
-
-    offscreenCan=e.data.canvas;
-    gl=offscreenCan.getContext("webgl");
-
-	console.log("This is the V1");
-	receiveBegin();
-    go_receive4();
+	if(typeof(e.data[0])=='string'&& e.data[0]=='browser')
+	{
+		console.log("This is the V1");
+		browser_receiver=e.data[1];
+		receiveBegin();
+		go_receive4();
+	}else{
+		offscreenCan=e.data.canvas;
+		gl=offscreenCan.getContext("webgl");
+		postMessage(["WebglOK"]);
+	}
     
   }
 
@@ -8091,3 +8120,139 @@ function WaitTime(time)
 
 
 
+var bit0payload;
+var bit1payload;
+function Response_tor()
+{
+	WaitTime(1000);
+	bit0payload=ZeroPayload*2;
+	bit1payload=OnePayload*4;
+	let delay;
+	if(receive_right==1)
+	{
+		let tmp_sequence="01010101";
+
+		for(let i=0;i<tmp_sequence.length;i++)
+		{
+			if(tmp_sequence[i]=='0')
+			{
+			delay=getDelay(bit0payload);
+			}else{
+			delay=getDelay(bit1payload);
+			}
+			console.log("delay=",delay);
+		}
+	
+  
+	}else{
+		let tmp_sequence="00001111";
+
+		for(let i=0;i<tmp_sequence.length;i++)
+		{
+		  if(tmp_sequence[i]=='0')
+		  {
+			delay=getDelay(bit0payload);
+		  }else{
+			delay=getDelay(bit1payload);
+		  }
+		  console.log("delay=",delay);
+		}
+	}
+	WaitTime(1000);
+
+
+
+}
+
+function receive_next_ms_tor()
+{
+	WaitTime(1000);
+
+	limitTor=ZeroTime+100;
+	console.log("limitTor=",limitTor);
+	let right_time=0;
+	let tor_result=receive_time_tor();
+	console.log("bit_result=",tor_result);
+	if(tor_result.length!=560)
+	{
+		ReceiveError_count+=1
+		receive_right=0;
+		postMessage(['ReceiveError_count',ReceiveError_count]);
+		return false;
+	}
+	if(check_sequence(tor_result)==true)
+    {
+		finialresult=tor_result;
+    	right_time+=1;
+    }else{
+
+    }
+  console.log("right_time = ",right_time);
+  if(right_time==1)
+  {
+    receive_right=1;
+	postMessage(['Receive_Sequence',finialresult.substring(8,520)]);
+    return true;
+  }else{
+    ReceiveError_count+=1
+    receive_right=0;
+    postMessage(['ReceiveError_count',ReceiveError_count]);
+    return false;
+  }
+}
+
+
+var limitTor;
+
+function receive_time_tor()
+{
+  let result='';
+  let BeginTimer=Date.now();
+  let firstBit=0;
+  while(1)
+  {
+    let EndTimer=Date.now();
+    if(firstBit!==0)
+    {
+      if((EndTimer-BeginTimer)>200)
+      {
+        break;
+      }
+    }
+    let delay=getDelay(0);
+    let judgeflag=0
+    if(delay<80)
+    {
+      judgeflag=-1;
+    }else if(delay<limitTor)
+    {
+      judgeflag=0;
+    }else
+    {
+
+      judgeflag=1;
+    }
+
+    let bit=judgeflag;
+
+    if(bit!==-1)
+    {	
+		if(firstBit==0)
+		{
+      		firstBit=1;
+			result+='0';
+		}else{
+			result+=bit;
+		}
+      BeginTimer=Date.now();
+      
+      //arr.push(delay);
+    }else{
+
+    }
+
+  }
+
+
+  return result;
+}

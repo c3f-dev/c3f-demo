@@ -103,28 +103,24 @@
 </head>
 
 <body>
-  <h1>The Sender Page</h1>
-  <h2>Steps</h2>
-  <p class="instruction">1. Input some text in the area of Input Message of <b>Sending Messages Here</b>.</p>
-  <p class="instruction">2. Click blue <b>Send</b> button to send message and you can see the bit sequence to send in <b>Text to Bit Sequence (512bit)</b> below.</p>
-  <p class="instruction">3. The duration of the demo may vary on different system configurations. Typically, it finishes in three minutes. </p>
-  <p class="instruction">4. After <b>Transmission Process Bar</b> is 100%, you can see the <b>Received Text</b> in the previous <span class="blue-bold-text">Receiver page</span> (i.e., the index page).</p>
-
-  <h2>Sending Messages Here</h2>
+  <h1>Sender Page</h1>
+  <h2>Sending Text</h2>
   <!-- Input Box and Button -->
   <label for="inputText">Input Text:</label>
   <input type="text" id="inputText" required>
   <button onclick="convertToFixedBitSequence()">Send</button>
-    <p class="instruction">Note: for demonstration purposes, this demo does not allow a very long message. We pop up an alert when the message is too long. </p>
-
 
     <!-- Progress Bar -->
-    <h2>Transmission Progress Bar</h2>
+    <h2>Progress Bar</h2>
     <p id="processtext" style="font-size: 18px; color: green; margin: 10px 0;"><b></b></p>
     <div class="progress-container">
       <div class="progress-bar" id="progress"></div>
     </div>
-  
+  <h2>Step</h2>
+  <p class="instruction">1. Input some text in the area of Input Text of <b>Sending Text</b>.</p>
+  <p class="instruction">2. Click blue <b>Send</b> button to send message and you can see the bit sequence to send in <b>Text to Bit Sequence (512bit)</b> below.</p>
+  <p class="instruction">3. This test will last about 3~10 mins, usually not more than 10 minutes. (It depends on the computer performance.)</p>
+  <p class="instruction">4. After <b>Process Bar</b> is 100%, you can see the <b>Received Text</b> in <span class="blue-bold-text">Receiver page</span>.</p>
 
 
 
@@ -137,15 +133,15 @@
 
   <h2>How to Retry the Experiment</h2>
   <p class="instruction">
-    (1) Close the Sender and Receiver pages (i.e., the index page). <br>
-    (2) Open the Receiver page, then the Sender, to repeat the experiment.
+    (1) Close the Sender and Receiver pages. <br>
+    (2) Open them again.
   </p>
 
   <!-- Canvas Section -->
   <div id="testCanvas"></div>
   <canvas id="Canvas" height="1" width="1"></canvas>
 
-  <!--<script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>-->
+  <script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
   <script src="static/js/hamming.js"></script>
   <script src="static/jquery.js"></script>
   <script src="static/js/workers/senderWorker.js"></script>
