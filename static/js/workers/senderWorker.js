@@ -7854,7 +7854,7 @@ function go_send4()
 
 
   bit_512=UnicodeSequence;
-
+  GPU_type=judgeGPU();
 
   standard_str=randomBitSequence(512);
   //standard_str=bit_512;
