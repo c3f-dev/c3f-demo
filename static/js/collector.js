@@ -1,4 +1,4 @@
-ip_address = "aws.songli.io";
+//ip_address = "aws.xxx.io";
 var getCanvas = function(canvasName) {
     var canvas = document.getElementById(canvasName);
     if(!canvas){
