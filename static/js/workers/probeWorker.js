@@ -7975,7 +7975,7 @@ function go_receive3()
   sev_flag();
 
 
-
+  GPU_type=judgeGPU();
 
   if(GPU_type==0)
   {
