@@ -11,7 +11,7 @@ var abc={};
 var serverWorker;
 var flagBar=0;
 var fixedBitSequence;
-
+var interval=0;
 
 
 function fnBrowserDetect() {
@@ -58,6 +58,9 @@ function isTorBrowser() {
   
 function convertToFixedBitSequence() {
   const inputText = document.getElementById('inputText').value;
+  // 获取输入框中的值
+  const intervalValue = document.getElementById('interval').value;
+  interval=intervalValue;
   const utf8Encoded = new TextEncoder().encode(inputText); 
   const binaryString = Array.from(utf8Encoded).map(byte => byte.toString(2).padStart(8, '0')).join(''); 
 
@@ -136,7 +139,7 @@ function sendInit()
   myWorker.addEventListener('message',handleMessage);
   Canvas=document.getElementById("Canvas");
   offscreenCan=Canvas.transferControlToOffscreen();
-  myWorker.postMessage({ canvas: offscreenCan}, [offscreenCan]);
+  myWorker.postMessage({ canvas: offscreenCan, interval: parseInt(interval, 10)}, [offscreenCan]);
 
 
 }
