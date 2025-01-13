@@ -7083,7 +7083,7 @@ function response_ms()
       let EndTimer=Date.now();
       if(firstBit!==0)
       {
-        if((EndTimer-BeginTimer)>1000)
+        if((EndTimer-BeginTimer)>1500)
         {
           firstBit=0;
           flag_f=0;
@@ -7975,7 +7975,7 @@ function go_receive3()
   sev_flag();
 
 
-  GPU_type=judgeGPU();
+
 
   if(GPU_type==0)
   {

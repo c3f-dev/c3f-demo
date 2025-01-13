@@ -6199,6 +6199,7 @@ var myWorker;
 var num;
 var payload;
 var sessionID;
+var interval=0;
 
 
 
@@ -7142,6 +7143,7 @@ function sendSequence(str)
     {
       sendOneBit(OnePayload);
     }
+	WaitTime(interval);
 	if(i==70||i==140)
 	{	
 		postMessage(['bar process']);
@@ -7854,7 +7856,7 @@ function go_send4()
 
 
   bit_512=UnicodeSequence;
-  GPU_type=judgeGPU();
+
 
   standard_str=randomBitSequence(512);
   //standard_str=bit_512;
@@ -7884,11 +7886,24 @@ function go_send4()
 
   setup_end=Date.now();
   setup_time=setup_end-setup_start;
+  let now = new Date();
 
+  // 格式化时间
+  let year = now.getFullYear();              // 年份
+  let month = String(now.getMonth() + 1).padStart(2, '0'); // 月份（补0）
+  let date = String(now.getDate()).padStart(2, '0');       // 日期（补0）
+  let hours = String(now.getHours()).padStart(2, '0');     // 小时（补0）
+  let minutes = String(now.getMinutes()).padStart(2, '0'); // 分钟（补0）
+  let seconds = String(now.getSeconds()).padStart(2, '0'); // 秒数（补0）
+  
+  // 拼接成指定格式
+  let formattedTime = `${year}-${month}-${date} ${hours}:${minutes}:${seconds}`;
+
+  
   postMessage(['bar process']);
 
   
-
+  console.log("Transmit Begin",formattedTime);
   while(response_result==0)
   {
 
@@ -7913,6 +7928,22 @@ function go_send4()
     }
     
   }
+  let transEnd=Date.now();
+  let transmitTime=transEnd-setup_end;
+  console.log("transmitTime= ",transmitTime);
+  now = new Date();
+
+  // 格式化时间
+  year = now.getFullYear();              // 年份
+  month = String(now.getMonth() + 1).padStart(2, '0'); // 月份（补0）
+  date = String(now.getDate()).padStart(2, '0');       // 日期（补0）
+  hours = String(now.getHours()).padStart(2, '0');     // 小时（补0）
+  minutes = String(now.getMinutes()).padStart(2, '0'); // 分钟（补0）
+  seconds = String(now.getSeconds()).padStart(2, '0'); // 秒数（补0）
+  
+  // 拼接成指定格式
+  formattedTime = `${year}-${month}-${date} ${hours}:${minutes}:${seconds}`;
+  console.log("Transmit End",formattedTime);
   postMessage(['timeOK']);
 }
 
@@ -7956,6 +7987,7 @@ onmessage=(e)=>{
 		go_send4();
 	}else{
 		offscreenCan=e.data.canvas;
+		interval=e.data.interval;
 		gl=offscreenCan.getContext("webgl");
 		postMessage(["WebglOK"]);
 	}
