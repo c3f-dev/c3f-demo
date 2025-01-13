@@ -112,9 +112,6 @@
 
   <h2>Sending Messages Here</h2>
   <!-- Input Box and Button -->
-  <label for="interval">The GPU Rest interval between 2 bits (Reducing GPU Utilization): </label>
-  <input type="number" id="interval" name="interval" min="0" step="1" value="0" required><b class="instruction">(Generally 0-180ms is appropriate)</b>
-  <p class="instruction">(if the interval is too long, it will not be consistent with some parameter settings of the system, resulting in some parts can not work normally)</p>
   <label for="inputText">Input Text:</label>
   <input type="text" id="inputText" value="Ouch! My cookie and storage is sent to another browser!" required>
   <button onclick="convertToFixedBitSequence()">Send</button>
@@ -136,13 +133,24 @@
   <pre id="result"></pre>
 
 
-
-
   <h2>How to Retry the Experiment</h2>
   <p class="instruction">
     (1) Close the Sender and Receiver pages (i.e., the index page). <br>
     (2) Open the Receiver page, then the Sender, to repeat the experiment.
   </p>
+
+  <h2>GPU Utilization Experiment for RQ3.4 in paper (Optional)</h2>
+  <p class="instruction"><b>If you don't want to perform this experiment, please keep the following parameters as 0.</b></p>
+  <p class="instruction"><b>Setting it to a higher value when doing the experiment above will reduce the system's GPU utilization by sacrificing bandwidth.</b></p>
+  <p class="instruction">This parameter is used to set the time interval between two consecutive bits when sending.</p>
+  <p class="instruction">The larger the interval, the more idle the GPU becomes, resulting in lower GPU utilization. </p>
+  <p class="instruction">Please do not input the interval too long to avoid system malfunction.</p>
+  <p class="instruction">Please use the built-in Task Manager in Windows to monitor GPU utilization.</p>
+
+  <label for="interval">The interval between 2 bits (ms): </label>
+  <input type="number" id="interval" name="interval" min="0" step="1" value="0" required><b class="instruction">(Generally 0-180 (ms) is appropriate)</b>
+  
+
 
   <!-- Canvas Section -->
   <div id="testCanvas"></div>
