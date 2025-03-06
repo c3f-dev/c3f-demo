@@ -6550,6 +6550,11 @@ function getDelay(payload)
 {
   if(payload==0)
   {
+	if(browserName=="safari"){
+		cur_vertex_code = vertex_code.replace("$payload$", payload);  
+    	sendPrepare(payload);
+		gl.drawArrays(gl.POINTS, 0, numOfVertices);	
+	}
     let startTime=Date.now();
     /*
     if(first_time==0)
@@ -6600,6 +6605,9 @@ function getDelay(payload)
     }
     */
     //gl.finish();
+	
+	
+    
     const promise = new Promise(r => resolve = r)
    
     offscreenCan.convertToBlob(resolve, 'image/png', 1);
@@ -6699,19 +6707,20 @@ function getDelay(payload)
     offscreenCan.convertToBlob(resolve, 'image/png', 1);
     let end=Date.now();
     blob_time=end-start;
-   
+
+	gl.flush();
+   //gl.finish();
     
-    gl.flush();
     let endTime=Date.now();
     deleteGL();
     let delay=endTime-startTime;
     //console.log("delay= ",delay);
+	//WaitTime(10);
     return delay;
 
   }
   
 }
-
 
 
 
@@ -6903,7 +6912,7 @@ function receive_next_ms()
 
   for(let i=0;i<delay40_arr.length;i++)
   {
-
+	console.log("delay40 ",i," time =",delay40_arr[i]);
   }
 
   for(let i=0;i<time_arr.length;i++)
@@ -7077,6 +7086,7 @@ function response_ms()
     //console.log("let num=0; "+"num= "+0);
     let BeginTimer=Date.now();
     firstBit=0;
+
     while(1)
     {
       //console.log("while(1)");
@@ -7095,7 +7105,7 @@ function response_ms()
       let delay=getDelay(0);
       let judgeflag=0
       //console.log("delay= ",delay)
-      if(delay<20)//It's a probe
+      if(delay<40)//It's a probe
       {
         //console.log("2");
         judgeflag=-1;
@@ -7173,10 +7183,10 @@ function send_Info_Normal(info)
 {
 
 }
-
+var browserName;
 function fnBrowserDetect() {
   let userAgent = navigator.userAgent;
-  let browserName;
+
 
   if(userAgent.match(/edg/i)){
     browserName = "edge";
@@ -7203,6 +7213,8 @@ function fnBrowserDetect() {
 function receiveBegin()
 {
   let info;
+  fnBrowserDetect();
+  console.log("browserName= ",browserName);
   init();
 
 
@@ -7453,10 +7465,12 @@ function estimate_independence()
       let delay=end-start;
       if(i!=0)
       {
-        if(blob_time<50)
-        {
-          tt=1;
-        }
+
+		if(blob_time<50)
+		{
+			tt=1;
+		}
+		
         test1_sum+=delay;
       }
     }
@@ -7884,6 +7898,7 @@ function receive_flag()
   //console.log("let num=0; "+"num= "+0);
   let BeginTimer=Date.now();
   let firstBit=0;
+
   while(1)
   {
     //console.log("while(1)");
@@ -7896,6 +7911,7 @@ function receive_flag()
       }
     }
     let delay=getDelay(0);
+	//console.log("delay=",delay);
     //console.log("judgeBit()");
     //console.log("let bit=judgeBit(); "+"bit= "+bit);
 
@@ -7974,14 +7990,16 @@ function go_receive3()
 {
   sev_flag();
 
-
+	GPU_type=judgeGPU();
 
 
   if(GPU_type==0)
   {
     estimate_independence();
+	console.log("independence gpu");
   }else{
     estimate_core();
+	console.log("core gpu");
   }
   clock=Date.now();
   WaitTime(1000);

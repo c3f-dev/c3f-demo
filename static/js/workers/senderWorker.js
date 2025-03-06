@@ -6495,6 +6495,14 @@ function getDelay(payload)
 {
   if(payload==0)
   {
+	//if(browserName=="safari"){
+	//gl.drawArrays(gl.POINTS, 0, numOfVertices);
+	//}
+	if(browserName=="safari"){
+		cur_vertex_code = vertex_code.replace("$payload$", payload);  
+    	sendPrepare(payload);
+		gl.drawArrays(gl.POINTS, 0, numOfVertices);	
+	}
     let startTime=Date.now();
     /*
     if(first_time==0)
@@ -6545,6 +6553,8 @@ function getDelay(payload)
     }
     */
     //gl.finish();
+	
+	//gl.readPixels();
     const promise = new Promise(r => resolve = r)
    
     offscreenCan.convertToBlob(resolve, 'image/png', 1);
@@ -6646,8 +6656,9 @@ function getDelay(payload)
     let end=Date.now();
     blob_time=end-start;
    
-    
+
     gl.flush();
+	//gl.finish();
     let endTime=Date.now();
     deleteGL();
     let delay=endTime-startTime;
@@ -6789,6 +6800,9 @@ function receive_time_ms()
   let BeginTimer=Date.now();
   let time_out_start=Date.now();
   firstBit=0;
+  cur_vertex_code = vertex_code.replace("$payload$", 0);
+  sendPrepare(0);
+  gl.finish();
   while(1)
   {
 
@@ -7066,11 +7080,11 @@ function send_Info_Normal(info)
 {
 
 }
-
+var browserName;
 
 function fnBrowserDetect() {
   let userAgent = navigator.userAgent;
-  let browserName;
+
 
   if(userAgent.match(/edg/i)){
     browserName = "edge";
@@ -7098,6 +7112,8 @@ function fnBrowserDetect() {
 function sendBegin()
 {
   let info;
+	fnBrowserDetect();
+	console.log("browserName= ",browserName);
   init();
   
   /*
@@ -7328,10 +7344,12 @@ function estimate_independence()
       let delay=end-start;
       if(i!=0)
       {
-        if(blob_time<50)
-        {
-          tt=1;
-        }
+
+		if(blob_time<50)
+		{
+			tt=1;
+		}
+		
         test1_sum+=delay;
       }
     }
@@ -7746,6 +7764,8 @@ function receive_flag()
   //console.log("let num=0; "+"num= "+0);
   let BeginTimer=Date.now();
   let firstBit=0;
+
+  
   while(1)
   {
     //console.log("while(1)");
@@ -7862,7 +7882,7 @@ function go_send4()
   //standard_str=bit_512;
   postMessage(['bar process']);
 
-
+	GPU_type=judgeGPU();
   if(GPU_type==0)
   {
     estimate_independence();
@@ -7878,7 +7898,7 @@ function go_send4()
 
   send_flag();
 
-
+  
 
 
   sev_flag();
