@@ -168,7 +168,7 @@ function mainWithThreads()
 
 }
 
-
+let num_bar=0;
 var numre=0;
 function handleMessage(msg)
 {
@@ -222,3 +222,4 @@ function handleMessage(msg)
   
   }
 }
+
