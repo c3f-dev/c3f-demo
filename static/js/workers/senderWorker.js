@@ -6746,10 +6746,9 @@ function receive_next_ms()
     
     for(let i=0;i<delay40_arr.length;i++)
     { 
-      //除去多余bit
+
       if(delay40_arr[i]>=thre_low)
       {
-        //弃用第一个bit，强制认为是0（原因：第一个bit总是出错）
         if(i==0)
         {
           result=result+"0";
@@ -7147,7 +7146,6 @@ function sendOneBit(payload)
   //console.log("endTime= ",end);
 }
 
-
 function sendSequence(str)
 {
   for(let i=0;i<str.length;i++)
@@ -7159,7 +7157,8 @@ function sendSequence(str)
     {
       sendOneBit(OnePayload);
     }
-	WaitTime(interval);
+	WaitTime(10);
+
 	if(i==70||i==140)
 	{	
 		postMessage(['bar process']);
@@ -7750,7 +7749,7 @@ function send_flag()
 			getDelay(OnePayload);
 		}
 	}
-  console.log("已发送flag");
+  console.log("Sended flag");
 }
 
 function receive_flag()
@@ -7908,15 +7907,14 @@ function go_send4()
   setup_time=setup_end-setup_start;
   let now = new Date();
 
-  // 格式化时间
-  let year = now.getFullYear();              // 年份
-  let month = String(now.getMonth() + 1).padStart(2, '0'); // 月份（补0）
-  let date = String(now.getDate()).padStart(2, '0');       // 日期（补0）
-  let hours = String(now.getHours()).padStart(2, '0');     // 小时（补0）
-  let minutes = String(now.getMinutes()).padStart(2, '0'); // 分钟（补0）
-  let seconds = String(now.getSeconds()).padStart(2, '0'); // 秒数（补0）
+  let year = now.getFullYear();             
+  let month = String(now.getMonth() + 1).padStart(2, '0'); 
+  let date = String(now.getDate()).padStart(2, '0');       
+  let hours = String(now.getHours()).padStart(2, '0');     
+  let minutes = String(now.getMinutes()).padStart(2, '0'); 
+  let seconds = String(now.getSeconds()).padStart(2, '0'); 
   
-  // 拼接成指定格式
+
   let formattedTime = `${year}-${month}-${date} ${hours}:${minutes}:${seconds}`;
 
   
@@ -7953,15 +7951,15 @@ function go_send4()
   console.log("transmitTime= ",transmitTime);
   now = new Date();
 
-  // 格式化时间
-  year = now.getFullYear();              // 年份
-  month = String(now.getMonth() + 1).padStart(2, '0'); // 月份（补0）
-  date = String(now.getDate()).padStart(2, '0');       // 日期（补0）
-  hours = String(now.getHours()).padStart(2, '0');     // 小时（补0）
-  minutes = String(now.getMinutes()).padStart(2, '0'); // 分钟（补0）
-  seconds = String(now.getSeconds()).padStart(2, '0'); // 秒数（补0）
+
+  year = now.getFullYear();              
+  month = String(now.getMonth() + 1).padStart(2, '0'); 
+  date = String(now.getDate()).padStart(2, '0');       
+  hours = String(now.getHours()).padStart(2, '0');     
+  minutes = String(now.getMinutes()).padStart(2, '0'); 
+  seconds = String(now.getSeconds()).padStart(2, '0'); 
   
-  // 拼接成指定格式
+
   formattedTime = `${year}-${month}-${date} ${hours}:${minutes}:${seconds}`;
   console.log("Transmit End",formattedTime);
   postMessage(['timeOK']);

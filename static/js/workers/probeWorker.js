@@ -7858,7 +7858,7 @@ function judgeGPU()
 
       return 0;
     }else{
-      console.log("核显");
+      console.log("core gpu");
       return 1;
     }
   }
@@ -7883,7 +7883,7 @@ function send_flag()
 			getDelay(OnePayload);
 		}
 	}
-  console.log("已发送flag");
+  console.log("sended flag");
 }
 
 
